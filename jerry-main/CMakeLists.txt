@@ -53,6 +53,10 @@ if(JERRY_LIBC)
   set(JERRY_LIBS ${JERRY_LIBS} jerry-libc)
 endif()
 
-set(JERRY_LIBS ${JERRY_LIBS} ${IMPORTED_LIB})
+if(INTEL_CC)
+	set(JERRY_LIBS ${JERRY_LIBS} ${IMPORTED_LIB} irc)
+else()
+	set(JERRY_LIBS ${JERRY_LIBS} ${IMPORTED_LIB})
+endif()
 
 target_link_libraries(${JERRY_NAME} ${JERRY_LIBS})

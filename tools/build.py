@@ -57,6 +57,7 @@ def add_build_args(parser):
     parser.add_argument('--jerry-core', choices=['on', 'off'], default='on', help='Use jerry-core (default: %(default)s)')
     parser.add_argument('--jerry-libm', choices=['on', 'off'], default='on', help='Use jerry-libm (default: %(default)s)')
     parser.add_argument('--jerry-cmdline', choices=['on', 'off'], default='on', help='Use jerry commandline tool (default: %(default)s)')
+    parser.add_argument('--intel-compiler', choices=['on', 'off'], default='off', help='Use intel icc compiler (default: %(default)s)')
 
 def get_arguments():
     parser = argparse.ArgumentParser()
@@ -88,7 +89,8 @@ def generate_build_options(arguments):
     build_options.append('-DENABLE_LTO=%s' % arguments.lto.upper())
     build_options.append('-DENABLE_STRIP=%s' % arguments.strip.upper())
     build_options.append('-DUNITTESTS=%s' % arguments.unittests)
-
+    build_options.append('-DINTEL_CC=%s' % arguments.intel_compiler.upper())
+    
     build_options.extend(arguments.cmake_param)
 
     build_options.append('-DEXTERNAL_COMPILE_FLAGS=' + ' '.join(arguments.compile_flag))

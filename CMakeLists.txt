@@ -14,6 +14,28 @@
 # limitations under the License.
 
 cmake_minimum_required (VERSION 2.8.12)
+
+if ("${INTEL_CC}" STREQUAL "ON")
+  find_program(INTELCOMPILER icc)
+  if (INTELCOMPILER)
+    set(CMAKE_C_COMPILER ${INTELCOMPILER})
+  endif()
+endif()
+
+if ("${CMAKE_C_COMPILER_ID}" MATCHES "Intel")
+	find_program(XIAR xiar)
+	if(XIAR)
+		set(CMAKE_AR "${XIAR}")
+	endif()
+	mark_as_advanced(XIAR)
+
+	find_program(XILD xild)
+	if(XILD)
+		set(CMAKE_LINKER "${XILD}")
+	endif()
+	mark_as_advanced(XILD)
+endif()
+
 project (Jerry C ASM)
 
 # Determining platform
@@ -67,6 +89,7 @@ message(STATUS "COMPILER_DEFAULT_LIBC     " ${COMPILER_DEFAULT_LIBC})
 message(STATUS "ENABLE_LTO                " ${ENABLE_LTO})
 message(STATUS "ENABLE_ALL_IN_ONE         " ${ENABLE_ALL_IN_ONE})
 message(STATUS "ENABLE_STRIP              " ${ENABLE_STRIP})
+message(STATUS "INTEL_CC                  " ${INTEL_CC})
 
 # Setup directories
 # Project binary dir
@@ -198,6 +221,12 @@ endif()
 
 # C
 jerry_add_compile_flags(-std=c99 -pedantic)
+
+# ICC
+if(INTEL_CC)
+	jerry_add_compile_flags(-O3 -xHost -ipo)
+	jerry_add_link_flags(-ipo)
+endif(INTEL_CC)
 
 # Strip binary
 if(ENABLE_STRIP AND NOT CMAKE_BUILD_TYPE STREQUAL "Debug")
